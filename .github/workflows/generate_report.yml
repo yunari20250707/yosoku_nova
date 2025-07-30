@@ -24,7 +24,7 @@ jobs:
         pip install transformers torch
 
     - name: Run NOVA report generator
-      run: python generate_report.py
+      run: python nova_core/generate_report.py
       working-directory: ${{ github.workspace }}
 
 
