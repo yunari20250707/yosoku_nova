@@ -20,6 +20,8 @@ def load_latest_prediction():
 
 def generate_report_content(prediction_data):
     """予測データからレポート本文を生成"""
+
+    # 予測データがリスト形式の場合に対応
     if isinstance(prediction_data, list) and len(prediction_data) > 0:
         date = prediction_data[0].get("date", "不明な日付")
     else:
@@ -28,7 +30,7 @@ def generate_report_content(prediction_data):
     category = prediction_data.get("category", "その他")
     summary = prediction_data.get("summary", "概要なし")
     prediction = prediction_data.get("prediction", "予測内容なし")
-    
+
     return f"""\
 【未来予測レポート】📅 {date}
 
