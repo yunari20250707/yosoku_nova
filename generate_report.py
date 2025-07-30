@@ -27,7 +27,11 @@ def generate_report_content(prediction_data):
     else:
         date = "不明な日付"
 
-    category = prediction_data.get("category", "その他")
+    if isinstance(prediction_data, list) and len(prediction_data) > 0:
+        category = prediction_data[0].get("category", "その他")
+    else:
+        category = "その他"
+
     summary = prediction_data.get("summary", "概要なし")
     prediction = prediction_data.get("prediction", "予測内容なし")
 
