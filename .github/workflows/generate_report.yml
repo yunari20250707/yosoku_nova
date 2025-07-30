@@ -1,8 +1,8 @@
-name: Generate and Publish NOVA Report
+name: 📄 Generate and Publish NOVA Report
 
 on:
   schedule:
-    - cron: '0 20 * * *'  # JST 朝5時（UTCは20時）
+    - cron: '15 5 * * *'  # JST 14:15（5:15am）
   workflow_dispatch:
 
 jobs:
@@ -21,13 +21,12 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install transformers torch
+        pip install -r requirements.txt
 
     - name: Run NOVA report generator
-      run: python nova_core/generate_report.py
+      run: python generate_report.py
       working-directory: ${{ github.workspace }}
-
-
+      
     - name: Commit and push changes
       run: |
         git config user.name "NOVA Bot"
@@ -35,4 +34,3 @@ jobs:
         git add docs/index.md index.html daily_reports/
         git commit -m "📝 Auto-update: daily NOVA report" || echo "No changes to commit"
         git push
-
