@@ -1,0 +1,48 @@
+name: 🌅 Daily NOVA Automation
+
+on:
+  schedule:
+    - cron: '0 20 * * *'  # JST 5:00AM（UTC 20:00）
+  workflow_dispatch:
+
+jobs:
+  run-nova:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run 1. Fetch News
+        run: python fetch_rss_articles.py
+
+      - name: Run 2. Classify Articles
+        run: python classify_articles.py
+
+      - name: Run 3. Learn Daily Trends
+        run: python daily_learning.py
+
+      - name: Run 4. Predict the Future
+        run: python predict_future.py
+
+      - name: Run 5. Generate and Publish Report
+        run: python generate_report.py
+
+      - name: Commit and Push Report
+        run: |
+          git config user.name "NOVA Bot"
+          git config user.email "noreply@nova.ai"
+          git add docs/index.md index.html daily_reports/
+          git commit -m "📝 Auto-update: NOVA full report" || echo "No changes"
+          git push
+
