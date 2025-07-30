@@ -2,7 +2,7 @@ name: NOVA Learn Phase
 
 on:
   schedule:
-    - cron: '0 3 * * *'  # 毎日日本時間12:00に実行（UTC+0の3時）
+    - cron: '0 20 * * *'  # JST 5:00
   workflow_dispatch:      # 手動実行も可能
 
 jobs:
