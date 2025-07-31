@@ -9,7 +9,7 @@ jobs:
   daily-nova:
     runs-on: ubuntu-latest
 
-    env:  # ✅ ここに追加
+    env:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
     steps:
@@ -37,6 +37,9 @@ jobs:
 
       - name: 🔮 Generate Prediction Report
         run: python generate_report.py
+
+      - name: 📊 Generate Trend Report  # ✅ 新しく追加された処理
+        run: python generate_trend_report.py
 
       - name: 🚀 Commit and Push Updates
         run: |
