@@ -4,72 +4,48 @@ import json
 import os
 from datetime import datetime
 
-# 対象RSSリスト
-RSS_FEEDS = [
-    "https://www3.nhk.or.jp/rss/news/cat5.xml",
-    "https://www.nikkei.com/rss/economy.xml",
-]
+# 日付を取得
+date_str = datetime.now().strftime("%Y-%m-%d")
 
-# 保存先ディレクトリ
-SAVE_DIR = "data/news_articles"
-MEMORY_PATH = "memory.json"  # 記憶ファイルのパス
+# RSSフィード一覧（必要ならここに他媒体も追加）
+RSS_FEEDS = {
+    "nhk": "https://www3.nhk.or.jp/rss/news/cat5.xml",
+    "nikkei": "https://www.nikkei.com/rss/newstopics.rdf",
+}
 
-def save_to_memory(articles, memory_path=MEMORY_PATH):
-    """過去の記憶を保存する"""
-    try:
-        with open(memory_path, "r", encoding="utf-8") as f:
-            memory = json.load(f)
-    except FileNotFoundError:
-        memory = []
+# 保存処理（空リストでも保存）
+def save_articles(articles, filepath):
+    os.makedirs(os.path.dirname(filepath), exist_ok=True)
+    with open(filepath, "w") as f:
+        json.dump(articles, f, ensure_ascii=False, indent=2)
+    print(f"✅ 保存完了: {filepath}")
 
-    today_str = datetime.now().strftime("%Y-%m-%d")
-    memory.append({"date": today_str, "articles": articles})
-
-    with open(memory_path, "w", encoding="utf-8") as f:
-        json.dump(memory, f, ensure_ascii=False, indent=2)
-
+# メイン処理
 def fetch_rss_articles():
-    os.makedirs(SAVE_DIR, exist_ok=True)
-    all_articles = []
-
-    for url in RSS_FEEDS:
-        print(f"\n🌐 RSS取得中: {url}")
+    print("🚀 Plan C | RSSニュース取得開始")
+    for source, url in RSS_FEEDS.items():
+        print(f"🌐 RSS取得中：{url}")
         feed = feedparser.parse(url)
+        articles = []
+
         for entry in feed.entries:
-            article_url = entry.link
-            print(f"📰 記事URL: {article_url}")
             try:
-                article = Article(article_url, language='ja')
+                article = Article(entry.link)
                 article.download()
                 article.parse()
-                article.nlp()
-
-                record = {
+                articles.append({
                     "title": article.title,
-                    "url": article_url,
                     "text": article.text,
-                    "summary": article.summary,
+                    "url": entry.link,
                     "published": entry.get("published", ""),
-                }
-                all_articles.append(record)
-
+                })
+                print(f"📄 記事URL: {entry.link}")
             except Exception as e:
-                print(f"❌ 取得失敗: {article_url} → {e}")
+                print(f"❌ 取得失敗: {entry.link} → {e}")
 
-    if not all_articles:
-        print("\n⚠️ 取得できた記事がありませんでした。")
-    else:
-        today = datetime.now().strftime("%Y-%m-%d")
-        file_path = os.path.join(SAVE_DIR, f"{today}_rss_articles.json")
-        with open(file_path, "w", encoding="utf-8") as f:
-            json.dump(all_articles, f, ensure_ascii=False, indent=2)
-        print(f"\n✅ {len(all_articles)}件の記事を保存しました → {file_path}")
-
-        # 🧠 記憶に保存
-        save_to_memory(all_articles)
-
-    return all_articles
+        # 保存（記事が0件でも保存する）
+        save_path = f"articles/{date_str}_{source}.json"
+        save_articles(articles, save_path)
 
 if __name__ == "__main__":
-    print("🚀 Plan C｜RSSニュース取得開始")
     fetch_rss_articles()
