@@ -2,7 +2,7 @@ name: 🔁 NOVA Daily Automation
 
 on:
   schedule:
-    - cron: '0 20 * * *'  # JST 朝5時（UTC 20:00）
+    - cron: '0 22 * * *'  # JST 07:00（UTC 22:00）
   workflow_dispatch:
 
 jobs:
