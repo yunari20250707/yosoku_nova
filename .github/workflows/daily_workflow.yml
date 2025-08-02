@@ -2,11 +2,11 @@ name: 🔁 NOVA Daily Automation
 
 on:
   schedule:
-    - cron: '0 22 * * *'  # JST 07:00（UTC 22:00）
+    - cron: '0 22 * * *'  # JST 07:00：ニュース取得のまま
   workflow_dispatch:
 
 jobs:
-  daily-nova:
+  fetch-and-learn:
     runs-on: ubuntu-latest
 
     env:
@@ -34,6 +34,30 @@ jobs:
 
       - name: 🧠 Classify Articles
         run: python classify_articles.py
+
+  generate-and-publish:
+    needs: fetch-and-learn
+    runs-on: ubuntu-latest
+
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+    steps:
+      - name: ⏳ Delay for 15 minutes before generating reports
+        run: sleep 900  # 15分（必要なら30分＝1800）
+
+      - name: 📦 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 📦 Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
       - name: 🔮 Generate Prediction Report
         run: python generate_report.py
