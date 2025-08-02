@@ -10,7 +10,7 @@ DOCS_INDEX_PATH = "docs/index.md"
 HTML_INDEX_PATH = "index.html"
 
 def load_latest_prediction():
-    """最新の日付の予測ファイルを選んで読み込む"""
+    """最新の予測ファイルを読み込む（ファイル内の日付も返す）"""
     json_files = [
         f for f in os.listdir(PREDICTIONS_DIR) if f.endswith(".json")
     ]
@@ -19,34 +19,31 @@ def load_latest_prediction():
         try:
             return datetime.strptime(filename.split("_")[0], "%Y-%m-%d")
         except ValueError:
-            return datetime.min  # 不正なファイルは無視
+            return datetime.min
 
     sorted_files = sorted(json_files, key=extract_date, reverse=True)
 
     for file in sorted_files:
         path = os.path.join(PREDICTIONS_DIR, file)
         with open(path, "r", encoding="utf-8") as f:
-            return json.load(f), file
-
+            data = json.load(f)
+            if isinstance(data, list) and len(data) > 0:
+                return data, data[0].get("date", "unknown")
     return None, None
 
-def generate_report_content(prediction_data):
-    """予測データからレポート本文を生成"""
-
+def generate_report_content(prediction_data, report_date):
     if isinstance(prediction_data, list) and len(prediction_data) > 0:
         first_item = prediction_data[0]
-        date = first_item.get("date", "不明な日付")
         category = first_item.get("category", "その他")
         summary = first_item.get("summary", "概要なし")
         prediction = first_item.get("prediction", "予測内容なし")
     else:
-        date = "不明な日付"
         category = "その他"
         summary = "概要なし"
         prediction = "予測内容なし"
-        
+
     return f"""\
-【未来予測レポート】📅 {date}
+【未来予測レポート】📅 {report_date}
 
 🗂 カテゴリ: {category}
 
@@ -61,12 +58,9 @@ def generate_report_content(prediction_data):
 🧠 powered by NOVA｜未来予測AI
 """
 
-def save_report(content, base_filename):
-    """生成したレポートを daily_reports に保存"""
-    if not os.path.exists(REPORTS_DIR):
-        os.makedirs(REPORTS_DIR)
-
-    filename = f"report_{base_filename.replace('.json', '.txt')}"
+def save_report(content, report_date):
+    os.makedirs(REPORTS_DIR, exist_ok=True)
+    filename = f"report_{report_date}_predictions.txt"
     path = os.path.join(REPORTS_DIR, filename)
     with open(path, "w", encoding="utf-8") as f:
         f.write(content)
@@ -74,7 +68,6 @@ def save_report(content, base_filename):
     return path
 
 def generate_html_report(txt_content):
-    """テキストをHTMLに変換する"""
     html = """<!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -99,20 +92,17 @@ def generate_html_report(txt_content):
     return html
 
 def main():
-    data, filename = load_latest_prediction()
+    data, report_date = load_latest_prediction()
     if not data:
         print("[⚠️] 予測データが見つかりません。")
         return
 
-    # レポート作成と保存
-    content = generate_report_content(data)
-    output_path = save_report(content, filename)
+    content = generate_report_content(data, report_date)
+    output_path = save_report(content, report_date)
 
-    # Markdownにコピー
     shutil.copyfile(output_path, DOCS_INDEX_PATH)
     print(f"[📄] docs/index.md にコピーしました。")
 
-    # HTMLも作成して index.html に出力
     html = generate_html_report(content)
     with open(HTML_INDEX_PATH, "w", encoding="utf-8") as f:
         f.write(html)
