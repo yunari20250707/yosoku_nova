@@ -1,16 +1,12 @@
-【未来予測レポート】📅 不明な日付
+【未来予測レポート】📅 2025-08-02
 
-🗂 カテゴリ: 環境・エネルギー
+🗂 カテゴリ: 経済・金融
 
 📝 要約:
- The average GDP is $37.9 trillion . The average household income is $1.6 trillion . GDP is 1.5 trillion per year .
+日銀が金利維持を発表、円安傾向が続く見込み。
 
 🔮 未来予測:
-演。 [Konkou] Tōsen Kenkyū no Yūki (2007), page 1
-
-, page 1 http://en.wikipedia.org/wiki/Japan
-
-http://www.nhlbi.nih.gov/about/news/news-releases/national-news/news-releases/national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national-news-national
+円安が続くことで、今後輸出企業は追い風を受けるが、輸入コストの上昇による物価上昇も避けられない。中長期的には経済政策の転換が求められるだろう。
 
 ---
 
