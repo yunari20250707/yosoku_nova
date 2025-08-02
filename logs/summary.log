@@ -1,3 +1,15 @@
 Device set to use mps:0
 🧠 要約処理対象: 2025-07-30_rss_articles.json
 ✅ 要約完了 → summarized_articles/2025-07-30_summaries.json
+Device set to use mps:0
+Token indices sequence length is longer than the specified maximum sequence length for this model (1343 > 1024). Running this sequence through the model will result in indexing errors
+🧠 要約処理対象: 2025-07-31_rss_articles.json
+✅ 要約完了 → summarized_articles/2025-07-31_summaries.json
+Device set to use mps:0
+Token indices sequence length is longer than the specified maximum sequence length for this model (1355 > 1024). Running this sequence through the model will result in indexing errors
+🧠 要約処理対象: 2025-08-01_rss_articles.json
+✅ 要約完了 → summarized_articles/2025-08-01_summaries.json
+Device set to use mps:0
+Token indices sequence length is longer than the specified maximum sequence length for this model (1355 > 1024). Running this sequence through the model will result in indexing errors
+🧠 要約処理対象: 2025-08-01_rss_articles.json
+✅ 要約完了 → summarized_articles/2025-08-01_summaries.json

@@ -19,6 +19,11 @@ def save_articles(articles, filepath):
     with open(filepath, "w") as f:
         json.dump(articles, f, ensure_ascii=False, indent=2)
     print(f"✅ 保存完了: {filepath}")
+    # 🔍 保存ファイル存在チェックログ
+    if os.path.exists(filepath):
+        print(f"📦 確認: ファイル存在 → {filepath}")
+    else:
+        print(f"⚠️ エラー: ファイルが存在しません → {filepath}")
 
 # メイン処理
 def fetch_rss_articles():

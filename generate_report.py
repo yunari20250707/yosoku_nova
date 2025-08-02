@@ -2,6 +2,7 @@ import os
 import json
 import shutil
 from datetime import datetime
+from pytz import timezone
 
 PREDICTIONS_DIR = "predicted_future"
 REPORTS_DIR = "daily_reports"
@@ -9,13 +10,24 @@ DOCS_INDEX_PATH = "docs/index.md"
 HTML_INDEX_PATH = "index.html"
 
 def load_latest_prediction():
-    """最新の予測結果ファイルを読み込む"""
-    files = sorted(os.listdir(PREDICTIONS_DIR), reverse=True)
-    for file in files:
-        if file.endswith(".json"):
-            path = os.path.join(PREDICTIONS_DIR, file)
-            with open(path, "r", encoding="utf-8") as f:
-                return json.load(f), file
+    """最新の日付の予測ファイルを選んで読み込む"""
+    json_files = [
+        f for f in os.listdir(PREDICTIONS_DIR) if f.endswith(".json")
+    ]
+
+    def extract_date(filename):
+        try:
+            return datetime.strptime(filename.split("_")[0], "%Y-%m-%d")
+        except ValueError:
+            return datetime.min  # 不正なファイルは無視
+
+    sorted_files = sorted(json_files, key=extract_date, reverse=True)
+
+    for file in sorted_files:
+        path = os.path.join(PREDICTIONS_DIR, file)
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f), file
+
     return None, None
 
 def generate_report_content(prediction_data):
@@ -59,7 +71,7 @@ def save_report(content, base_filename):
     with open(path, "w", encoding="utf-8") as f:
         f.write(content)
     print(f"[✅] レポートを保存しました: {path}")
-    return path  # ← ここでパスを返す！
+    return path
 
 def generate_html_report(txt_content):
     """テキストをHTMLに変換する"""
