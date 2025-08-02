@@ -38,13 +38,13 @@ jobs:
       - name: 🔮 Generate Prediction Report
         run: python generate_report.py
 
-      - name: 📊 Generate Trend Report  # ✅ 新しく追加された処理
+      - name: 📊 Generate Trend Report
         run: python generate_trend_report.py
 
       - name: 🚀 Commit and Push Updates
         run: |
           git config user.name "NOVA Bot"
           git config user.email "noreply@nova.ai"
-          git add docs/index.md index.html daily_reports/ memory.json
+          git add docs/index.md index.html daily_reports/ memory.json articles/
           git commit -m "📈 Auto: Update daily report and memory" || echo "No changes to commit"
           git push
