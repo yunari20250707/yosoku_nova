@@ -2,7 +2,7 @@ name: 🔁 NOVA Daily Automation
 
 on:
   schedule:
-    - cron: '0 22 * * *'  # JST 07:00：ニュース取得のまま
+    - cron: '0 22 * * *'  # JST 7:00 実行（UTC 22:00）
   workflow_dispatch:
 
 jobs:
@@ -26,7 +26,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: 📰 Fetch & Save News Articles
+      - name: 📰 Fetch News Articles
         run: python fetch_rss_articles.py
 
       - name: 🧠 Learn from Articles
@@ -43,8 +43,8 @@ jobs:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
     steps:
-      - name: ⏳ Delay for 15 minutes before generating reports
-        run: sleep 900  # 15分（必要なら30分＝1800）
+      - name: ⏳ Delay before generating reports
+        run: sleep 1200  # 20分待機（fetch & learn 処理時間を考慮）
 
       - name: 📦 Checkout repository
         uses: actions/checkout@v4
@@ -69,6 +69,6 @@ jobs:
         run: |
           git config user.name "NOVA Bot"
           git config user.email "noreply@nova.ai"
-          git add docs/index.md index.html daily_reports/ memory.json articles/
+          git add docs/index.md index.html daily_reports/ memory.json articles/ predicted_future/ classified_articles/
           git commit -m "📈 Auto: Update daily report and memory" || echo "No changes to commit"
           git push
